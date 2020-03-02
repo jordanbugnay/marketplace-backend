@@ -1,0 +1,18 @@
+Create a REST web application with the following characteristics:
+1. Must be written in Node.js and ES6+
+2. Must not use any Node.js eCommerce-specific CMS/Framework.
+Non-eCommerce Frameworks are allowed.
+3. Must use a database (preferably with Elasticsearch, optional
+MySQL/PostgreSQL/MongoDB).
+4. Bonuspointsifdeployedtoacloudenvironment(preferablyAWS).
+Project Specifications
+
+
+The web application must be capable of the following: 
+1. List/add/update/delete Sellers
+2. List/add/update/delete Products per Seller
+3. Search for Products by name/description
+4. Create and add items with quantity and date into a Cart
+5. Reports: for each Product, provide data on how many times they were added to a
+Cart
+6. Bonus: Report top Sellers with most quantity of items added to all Carts 7. Focusonthehappypath.Bonuspointsforhandlingedge-casescenarios
