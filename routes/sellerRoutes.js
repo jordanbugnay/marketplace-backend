@@ -10,8 +10,8 @@ export default app => {
   });
 
   app.get('/seller', (req, res) => {
-    const body = req.query;
-    const payloadValidation = validate.getSeller(body);
+    const queryString = req.query;
+    const payloadValidation = validate.getSeller(queryString);
 
     if (payloadValidation.error) {
       return res.send(
@@ -19,7 +19,7 @@ export default app => {
       );
     }
 
-    const { id = 0 } = body;
+    const { id = 0 } = queryString;
 
     Seller.findOne({ where: { id } }).then(seller => {
       if (!seller) {
@@ -32,7 +32,15 @@ export default app => {
   });
 
   app.post('/seller', (req, res) => {
-    const { name = null, email = null } = req.body;
+    const { body = {} } = req;
+    const { name = null, email = null } = body;
+    const payloadValidation = validate.postSeller(body);
+
+    if (payloadValidation.error) {
+      return res.send(
+        errorCodes.badRequest({ message: payloadValidation.error })
+      );
+    }
 
     Seller.findOrCreate({ where: { email }, defaults: { name, email } })
       .then(([user, created]) => {
@@ -52,7 +60,15 @@ export default app => {
   });
 
   app.put('/seller', async (req, res) => {
-    const { opts = {}, id = 0 } = req.body;
+    const { body = {} } = req;
+    const { opts = {}, id = 0 } = body;
+    const payloadValidation = validate.putSeller(body);
+
+    if (payloadValidation.error) {
+      return res.send(
+        errorCodes.badRequest({ message: payloadValidation.error })
+      );
+    }
 
     const updateSeller = await Seller.update(opts, { where: { id } });
     if (updateSeller && !updateSeller[0]) {
@@ -65,7 +81,16 @@ export default app => {
   });
 
   app.delete('/seller', async (req, res) => {
-    const { id = 0 } = req.body;
+    const { body = {} } = req;
+
+    const payloadValidation = validate.deleteSeller(body);
+    if (payloadValidation.error) {
+      return res.send(
+        errorCodes.badRequest({ message: payloadValidation.error })
+      );
+    }
+
+    const { id = 0 } = body;
 
     const deleteSeller = await Seller.destroy({ where: { id } });
 

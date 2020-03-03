@@ -15,7 +15,7 @@ import {
 
 const sequelize = new Sequelize(
   DATABASE_NAME,
-  DATABASE_NAME,
+  DATABASE_USER,
   DATABASE_PASSWORD,
   {
     host: DATABASE_HOST,
@@ -34,8 +34,6 @@ sequelize
     return console.log(`Database & tables created here!`);
   })
   .catch(err => console.log(err));
-
-const dropTables = sequelize.queryI;
 
 module.exports = {
   Seller,
