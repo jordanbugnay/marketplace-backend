@@ -1,21 +1,22 @@
 import {
-  listSellers,
-  getSeller,
-  createSeller,
-  updateSeller,
-  deleteSeller,
-} from '../database/seller';
+  listProducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from '../database/product';
 import errorCodes from '../lib/errorCodes';
-import validate from './sellerRoutes.validate';
+import validate from './productRoutes.validate';
 
 const ID_DOES_NOT_EXIST = 'id does not exist';
 
 export default app => {
-  app.get('/sellers', async (req, res) => res.send(await listSellers()));
+  // TODO: pagination, filtering, sorting
+  app.get('/products', async (req, res) => res.send(await listProducts()));
 
-  app.get('/seller/:id', async (req, res) => {
+  app.get('/product/:id', async (req, res) => {
     const params = req.params;
-    const payloadValidation = validate.getSeller(params);
+    const payloadValidation = validate.getProduct(params);
 
     if (payloadValidation.error) {
       return res.send(
@@ -24,17 +25,19 @@ export default app => {
     }
 
     const { id = 0 } = params;
-    const seller = await getSeller(id);
+    const product = await getProduct(id);
 
-    if (!seller) {
-      return res.send(errorCodes.notFound({ message: 'User does not exist' }));
+    if (!product) {
+      return res.send(
+        errorCodes.notFound({ message: 'Product does not exist' })
+      );
     }
-    return res.send(seller);
+    return res.send(product);
   });
 
-  app.post('/seller', async (req, res) => {
-    const { body = {} } = req;
-    const payloadValidation = validate.postSeller(body);
+  app.post('/seller/:sellerId/product', async (req, res) => {
+    const { body = {}, params = {} } = req;
+    const payloadValidation = validate.postProduct({ ...body, ...params });
 
     if (payloadValidation.error) {
       return res.send(
@@ -43,25 +46,17 @@ export default app => {
     }
 
     try {
-      const seller = await createSeller(body);
+      const product = await createProduct({ ...body, ...params });
 
-      if (!seller.created) {
-        return res.send(
-          errorCodes.duplicateResource({
-            message: 'Seller email already exists.',
-          })
-        );
-      }
-
-      return res.send(seller.user);
+      return res.send(product.details);
     } catch (error) {
       return res.send(errorCodes.badRequest({ message: error }));
     }
   });
 
-  app.put('/seller', async (req, res) => {
+  app.put('/product', async (req, res) => {
     const { body = {} } = req;
-    const payloadValidation = validate.putSeller(body);
+    const payloadValidation = validate.putProduct(body);
 
     if (payloadValidation.error) {
       return res.send(
@@ -70,8 +65,8 @@ export default app => {
     }
 
     try {
-      const seller = await updateSeller(body);
-      if (seller && !seller[0]) {
+      const product = await updateProduct(body);
+      if (product && !product[0]) {
         return res.send(
           errorCodes.unprocessableEntity({ message: ID_DOES_NOT_EXIST })
         );
@@ -83,10 +78,10 @@ export default app => {
     }
   });
 
-  app.delete('/seller', async (req, res) => {
+  app.delete('/product', async (req, res) => {
     const { body = {} } = req;
 
-    const payloadValidation = validate.deleteSeller(body);
+    const payloadValidation = validate.deleteProduct(body);
     if (payloadValidation.error) {
       return res.send(
         errorCodes.badRequest({ message: payloadValidation.error })
@@ -95,14 +90,14 @@ export default app => {
 
     const { id = 0 } = body;
 
-    const seller = await deleteSeller(id);
+    const product = await deleteProduct(id);
 
-    if (!seller) {
+    if (!product) {
       return res.send(
         errorCodes.unprocessableEntity({ message: ID_DOES_NOT_EXIST })
       );
     }
 
-    return res.send('Seller deleted');
+    return res.send('Product deleted');
   });
 };
