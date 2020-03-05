@@ -3,6 +3,12 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { init } from './elasticsearch/init';
+
+init().catch(err => {
+  console.log(err);
+});
+
 const app = express();
 const port = process.env.PORT;
 
