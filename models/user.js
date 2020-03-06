@@ -5,6 +5,12 @@ module.exports = (sequelize, type) => {
       primaryKey: true,
       autoIncrement: true
     },
-    name: type.STRING
+    name: type.STRING,
+    email: {
+      type: type.STRING,
+      unique: true,
+      allowNull: false,
+      required: true
+    }
   });
 };

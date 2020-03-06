@@ -1,8 +1,19 @@
-import Joi from '@hapi/joi';
+import Joi from "@hapi/joi";
+
+const listProduct = queryString => {
+  const schema = Joi.object({
+    limit: Joi.number(),
+    sort: Joi.string(),
+    filter: Joi.string(),
+    offset: Joi.number()
+  });
+
+  return schema.validate(queryString);
+};
 
 const getProduct = queryString => {
   const schema = Joi.object({
-    id: Joi.number().required(),
+    id: Joi.number().required()
   });
 
   return schema.validate(queryString);
@@ -14,7 +25,7 @@ const postProduct = body => {
     description: Joi.string().required(),
     quantity: Joi.number().required(),
     price: Joi.number().required(),
-    sellerId: Joi.number().required(),
+    sellerId: Joi.number().required()
   });
 
   return schema.validate(body);
@@ -27,15 +38,15 @@ const putProduct = body => {
       name: Joi.string(),
       description: Joi.string(),
       quantity: Joi.number(),
-      price: Joi.number(),
-    }).required(),
+      price: Joi.number()
+    }).required()
   });
   return schema.validate(body);
 };
 
 const deleteProduct = body => {
   const schema = Joi.object({
-    id: Joi.number().required(),
+    id: Joi.number().required()
   });
 
   return schema.validate(body);
@@ -46,4 +57,5 @@ export default {
   postProduct,
   putProduct,
   deleteProduct,
+  listProduct
 };

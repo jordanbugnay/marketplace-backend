@@ -5,10 +5,6 @@ module.exports = (sequelize, type) => {
       primaryKey: true,
       autoIncrement: true
     },
-    userId: {
-      type: type.INTEGER,
-      references: "users",
-      referencesKey: "id"
-    }
+    userId: type.INTEGER
   });
 };
